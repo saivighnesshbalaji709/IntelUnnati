@@ -1,0 +1,46 @@
+module fsm(IN, CLK, RST, OUT);
+input IN, CLK, RST;
+output reg OUT;
+parameter A = 2&#39;b00;
+parameter B = 2&#39;b01;
+parameter C = 2&#39;b10;
+reg [1:0] current_state;
+reg [1:0] next_state;
+always@(IN or current_state)
+case(current_state)
+A:
+if(IN)
+next_state = B;
+else
+next_state = A;
+B:
+if(IN)
+next_state = B;
+else
+next_state = C;
+C:
+if(IN)
+next_state = B;
+else
+next_state = A;
+default: next_state = A;
+endcase
+always@(posedge CLK)
+if(RST)
+current_state &lt;= A;
+else
+current_state &lt;= next_state;
+always@(IN or current_state)
+case(current_state)
+A: OUT = 0;
+B: OUT = 0;
+C:
+begin
+if(IN)
+OUT = 0;
+else
+OUT = 1;
+end
+default: OUT = 2&#39;bzz;
+endcase
+endmodule
